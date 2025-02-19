@@ -455,261 +455,7 @@ function updateEmo(lr) {
 			}
 		}
 	}
-
-	// 	//Variant: Detect distance to target using old Greeks: Phytagoras (More scientifically interesting, but somehow less funny 🙃)
-	// 	let h = home.offsetLeft - thingie.offsetLeft;
-	// 	let v = Math.abs(home.offsetTop - thingie.offsetTop);
-	// 	let dist = Math.hypot(h, v);
-	// 	console.log(h, v, dist);
-
-	// 	//dist = h;
-
-	// 	//dynamic stuff
-	// 	if (dist <= prevDist) {
-	// 		//happy
-	// 		emo.innerHTML = "😀";
-	// 	} else {
-	// 		//sad
-	// 		emo.innerHTML = "🙄";
-	// 	}
-
-	// 	//fixed values
-	// 	if (dist === 20) {
-	// 		emo.innerHTML = "🤗";
-	// 	}
-	// 	if (dist === 0) {
-	// 		emo.innerHTML = "🥳";
-	// 		home.innerHTML = "";
-	// 	} else {
-	// 		home.innerHTML = "🏠";
-	// 	}
-
-	// 	prevDist = dist;
 }
-
-//navigate with tilting
-window.addEventListener("deviceorientation", handleOrientation);
-
-function tiltTimer() {
-	allowTilt = false;
-	setTimeout(() => {
-		allowTilt = true;
-	}, "200");
-}
-
-function handleOrientation(e) {
-	//up/down = beta (smaller = up)
-	//left/right = gamma (neg = left)
-
-	if (firstMove) {
-		lastUD = e.beta;
-		lastLR = e.gamma;
-		firstMove = false;
-	}
-	if (allowTilt) {
-		if (e.beta < lastUD - mThreshold) {
-			up();
-			tiltTimer();
-		}
-		if (e.beta > lastUD + mThreshold) {
-			down();
-			tiltTimer();
-		}
-		if (e.gamma < lastLR - mThreshold) {
-			left();
-			tiltTimer();
-		}
-		if (e.gamma > lastLR + mThreshold) {
-			right();
-			tiltTimer();
-		}
-	}
-}
-
-//navigate with controller
-let haveEvents = "ongamepadconnected" in window;
-let gp = [];
-let allowU = true;
-let allowD = true;
-let allowL = true;
-let allowR = true;
-
-let allowAU = true;
-let allowAD = true;
-let allowAL = true;
-let allowAR = true;
-
-window.addEventListener("gamepadconnected", connectGamepad);
-window.addEventListener("gamepaddisconnected", disconnectGamepad);
-
-function disconnectGamepad() {
-	gp = [];
-}
-
-function connectGamepad(e) {
-	console.log("trying to connect");
-	gp[0] = e.gamepad;
-	requestAnimationFrame(updateStatus);
-}
-
-function updateStatus() {
-	if (!haveEvents) {
-		scangamepads();
-	}
-
-	for (let i = 0; i < gp[0].buttons.length; i++) {
-		//up
-		if (gp[0].buttons[12].pressed) {
-			if (allowU) {
-				up();
-				gpTimer("u");
-			}
-		}
-		if (gp[0].buttons[12].pressed === false) {
-			allowU = true;
-		}
-
-		//down
-		if (gp[0].buttons[13].pressed) {
-			if (allowD) {
-				down();
-				gpTimer("d");
-			}
-		}
-		if (gp[0].buttons[13].pressed === false) {
-			allowD = true;
-		}
-
-		//left
-		if (gp[0].buttons[14].pressed) {
-			if (allowL) {
-				left();
-				gpTimer("l");
-			}
-		}
-		if (gp[0].buttons[14].pressed === false) {
-			allowL = true;
-		}
-
-		//up
-		if (gp[0].buttons[15].pressed) {
-			if (allowR) {
-				right();
-				gpTimer("r");
-			}
-		}
-		if (gp[0].buttons[15].pressed === false) {
-			allowR = true;
-		}
-	}
-
-	for (let j = 0; j < gp[0].axes.length; j++) {
-		//console.log(gp[0].axes[3]);
-		if (gp[0].axes[1] < -0.8 || gp[0].axes[3] < -0.8) {
-			if (allowAU) {
-				up();
-				gpATimer("u");
-			}
-		}
-		if (gp[0].axes[1] > 0.8 || gp[0].axes[3] > 0.8) {
-			if (allowAD) {
-				down();
-				gpATimer("d");
-			}
-		}
-		if (gp[0].axes[0] < -0.8 || gp[0].axes[2] < -0.8) {
-			if (allowAL) {
-				left();
-				gpATimer("l");
-			}
-		}
-		if (gp[0].axes[0] > 0.8 || gp[0].axes[2] > 0.8) {
-			if (allowAR) {
-				right();
-				gpATimer("r");
-			}
-		}
-	}
-
-	requestAnimationFrame(updateStatus);
-}
-
-function scangamepads() {
-	var gamepads = navigator.getGamepads
-		? navigator.getGamepads()
-		: navigator.webkitGetGamepads
-		? navigator.webkitGetGamepads()
-		: [];
-	for (var i = 0; i < gamepads.length; i++) {
-		if (gamepads[i]) {
-			if (gamepads[i].index in gp) {
-				gp[gamepads[i].index] = gamepads[i];
-			} else {
-				addgamepad(gamepads[i]);
-			}
-		}
-	}
-}
-
-if (!haveEvents) {
-	setInterval(scangamepads, 500);
-}
-
-function gpTimer(adir) {
-	switch (adir) {
-		case "u":
-			allowU = false;
-			break;
-
-		case "d":
-			allowD = false;
-			break;
-
-		case "l":
-			allowL = false;
-			break;
-
-		case "r":
-			allowR = false;
-			break;
-	}
-
-	setTimeout(() => {
-		allowU = true;
-		allowD = true;
-		allowL = true;
-		allowR = true;
-	}, "200");
-}
-
-function gpATimer(adir) {
-	switch (adir) {
-		case "u":
-			allowAU = false;
-			break;
-
-		case "d":
-			allowAD = false;
-			break;
-
-		case "l":
-			allowAL = false;
-			break;
-
-		case "r":
-			allowAR = false;
-			break;
-	}
-
-	setTimeout(() => {
-		allowAU = true;
-		allowAD = true;
-		allowAL = true;
-		allowAR = true;
-	}, "200");
-}
-
-
 
 //Navigate with swipe
 let lasttouchpY = 0;
@@ -744,94 +490,112 @@ cont.addEventListener("touchmove", (e) => {
 	}
 });
 
-//Navigate with scrolling
-let lastscrollpY = 0;
-let lastscrollpX = 0;
-cont.addEventListener("wheel", (e) => {
-	//console.log("scrollY: " + e.deltaY + " scrollX: " + e.deltaX);
+// Audio
+const audio = document.getElementById("audio");
+const muteButton = document.getElementById("muteButton");
+const muteIcon = document.getElementById("muteIcon");
 
-	//handle Y scrolling
-	lastscrollpY = lastscrollpY + e.deltaY;
-	if (lastscrollpY > 0 && e.deltaY < 0) {
-		lastscrollpY = 0;
-	}
-	if (lastscrollpY < 0 && e.deltaY > 0) {
-		lastscrollpY = 0;
-	}
-
-	if (lastscrollpY > scThreshold) {
-		up();
-		lastscrollpY = 0;
-	}
-		if (lastscrollpY < (-1 * scThreshold)) {
-		down();
-		lastscrollpY = 0;
-	}
-	
-	//handle X scrolling
-	lastscrollpX = lastscrollpX + e.deltaX;
-	if (lastscrollpX > 0 && e.deltaX < 0) {
-		lastscrollpX = 0;
-	}
-	if (lastscrollpX < 0 && e.deltaX > 0) {
-		lastscrollpX = 0;
-	}
-
-	if (lastscrollpX > scThreshold) {
-		left();
-		lastscrollpX = 0;
-	}
-		if (lastscrollpX < (-1 * scThreshold)) {
-		right();
-		lastscrollpX = 0;
-	}
+window.addEventListener("load", () => {
+    audio.play().then(() => {
+        audio.muted = false;
+    }).catch(error => {
+        console.log("Autoplay blocked. User interaction required.");
+    });
 });
 
+function toggleMute() {
+    audio.muted = !audio.muted;
 
-//Timer
+    // Change the icon dynamically
+    if (audio.muted) {
+        muteIcon.classList.remove("fa-volume-high");
+        muteIcon.classList.add("fa-volume-mute");
+    } else {
+        muteIcon.classList.remove("fa-volume-mute");
+        muteIcon.classList.add("fa-volume-high");
+    }
+}
+
+
+// Timer
+let time = 60;
+let timerInterval;
+let overlay;
+
+// Preloader
+window.addEventListener("load", function () {
+    setTimeout(() => {
+        document.getElementById("preloader").style.display = "none";
+        startTimer(); // Timer starts AFTER preloader disappears
+    }, 2000);
+});
+
+// Lose and Winner Overlay
 document.addEventListener("DOMContentLoaded", function () {
-	const timerElement = document.getElementById("timer");
-	const overlay = document.getElementById("overlay");
-	const playAgainButton = document.getElementById("playAgainButton");
-	const thingie = document.getElementById("thingie");
-	const home = document.getElementById("home");
-  
-	let time = 30;
-	let timerInterval;
-  
-	function startTimer() {
-	  timerInterval = setInterval(function () {
-		time--;
-		if (time >= 0) {
-		  const minutes = Math.floor(time / 60).toString().padStart(2, "0");
-		  const seconds = (time % 60).toString().padStart(2, "0");
-		  timerElement.textContent = `${minutes}:${seconds}`;
-		} else {
-		  clearInterval(timerInterval);
-		  if (!thingie.classList.contains("home")) {
-			showOverlay("You Lose");
-		  }
-		}
-	  }, 1000);
-	}
-  
-	function resetTimer() {
-	  clearInterval(timerInterval);
-	  time = 30;
-	  timerElement.textContent = "0:30";
-	  overlay.style.display = "none";
-	  startTimer();
-	}
-  
-	function showOverlay(message) {
-	  overlay.style.display = "flex";
-	  overlay.querySelector("h2").textContent = message;
-	}
-  
-	startTimer();
-  
-	playAgainButton.addEventListener("click", function () {
-	  location.reload();
-	});
-  });
-  
+    overlay = document.getElementById("overlay"); 
+    const playAgainButton = document.getElementById("playAgainButton");
+    const playAgainWinButton = document.getElementById("playAgainWinButton");
+    const thingie = document.getElementById("thingie");
+    const home = document.getElementById("home");
+
+    playAgainButton.addEventListener("click", function () {
+        location.reload();
+    });
+
+    playAgainWinButton.addEventListener("click", function () {
+        location.reload();
+    });
+
+    function checkWinCondition() {
+        const thingieRect = thingie.getBoundingClientRect();
+        const homeRect = home.getBoundingClientRect();
+
+        if (
+            thingieRect.left < homeRect.right &&
+            thingieRect.right > homeRect.left &&
+            thingieRect.top < homeRect.bottom &&
+            thingieRect.bottom > homeRect.top
+        ) {
+            showWinOverlay();
+        }
+    }
+
+    // Dynamically detect movement
+    const observer = new MutationObserver(checkWinCondition);
+    observer.observe(thingie, { attributes: true, attributeFilter: ["style"] });
+});
+
+// Loser Overlay Function
+function showOverlay(message) {
+    overlay.style.display = "flex";
+    overlay.querySelector("h2").textContent = message;
+}
+
+// Winner Overlay Function
+function showWinOverlay() {
+    clearInterval(timerInterval);
+    document.getElementById("winOverlay").style.display = "flex";
+}
+
+// Start Timer Function
+function startTimer() {
+    const timerElement = document.getElementById("timer");
+
+    if (timerInterval) return; // Prevent multiple timers
+
+    timerInterval = setInterval(function () {
+        time--;
+        if (time >= 0) {
+            const minutes = Math.floor(time / 60).toString().padStart(2, "0");
+            const seconds = (time % 60).toString().padStart(2, "0");
+            timerElement.textContent = `${minutes}:${seconds}`;
+        } else {
+            clearInterval(timerInterval);
+            console.log("Timer reached 0, triggering showOverlay...");
+            showOverlay("You Lose");
+        }
+    }, 1000);
+}
+
+
+

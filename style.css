@@ -1,57 +1,144 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+
 body {
 	touch-action: pan-y;
-	background-color: #222;
+	background-color: #1A1A1A;
+	position: relative;
 }
 
 @font-face {
 	font-family: 'Pac-font';
-	src: url('font/PAC-FONT.TTF') format('truetype');
+	src: url('/assets/font/PAC-FONT.TTF') format('truetype');
 }
 
-#container {
-	position: absolute;
+/* Preloader */
+.preloader {
+	position: fixed;
 	top: 0;
 	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: #222;
-	display: grid;
-	grid-template-rows: 60% 40%;
+	width: 100%;
+	height: 100%;
+	background: #1A1A1A;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+.preloader img{
+	max-width: 300px;
+}
+
+.dots {
+	display: flex;
+	gap: 15px;
+	position: relative;
+	justify-content: center;
+	align-items: center;
+}
+
+.dot {
+	width: 10px;
+	height: 10px;
+	background: yellow;
+	border-radius: 50%;
+	opacity: 0;
+	animation: appear 1s linear infinite;
+}
+
+.dot:nth-child(1) {
+	animation-delay: 0s;
+}
+
+.dot:nth-child(2) {
+	animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+	animation-delay: 0.4s;
+}
+
+.dot:nth-child(4) {
+	animation-delay: 0.6s;
+}
+
+.dot:nth-child(5) {
+	animation-delay: 0.8s;
+}
+
+@keyframes appear {
+	0% {
+		opacity: 0;
+	}
+
+	50% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0;
+	}
+}
+
+/* Audio */
+.audio-controls {
+	margin: 15px;
+}
+
+.audio-controls button {
+	padding: 13px;
+	font-size: 20px;
+	cursor: pointer;
+	background: #FFD308;
+	color: #1A1A1A;
+	border: none;
+	border-radius: 50%;
+	margin-left: 90%;
+}
+
+/* Container */
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: 300px;
+	justify-content: center;
+	align-items: center;
+
+}
+
+.mbox{
+	display: flex;
+	flex-direction: column;
 }
 
 #maze {
 	position: absolute;
-	width: 340px;
-	height: 240px;
-	top: 45vh;
+	min-width: 340px;
+	min-height: 240px;
+	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 }
 .mbox img{
-	width: 400px; 
+	width: 350px; 
 	height: 100px; 
-	margin: 40px auto 0;
 }
 
-.mbox p{
+#timer{
 	color: #FFD308;
 	text-align: center;
-	margin: -145px 0 0px;
 	font-size: 40px;
 	font-weight: 600;
-	/* font-family: 'Pac-font', sans-serif; */
-}
-.mbox,
-.controls {
-	height: 100%;
-	background: #222;
-	display: grid;
 }
 
 .buttons {
 	width: 210px;
 	height: 140px;
-	background: #222;
+	background: #1A1A1A;
 	align-self: center;
 	justify-self: center;
 	display: grid;
@@ -106,8 +193,6 @@ body {
 	width: 20px;
 	height: 20px;
 	border-radius: 20px;
-	/*background: #39a;
-	transition: all .1s;*/
 }
 
 .emo {
@@ -141,23 +226,16 @@ body {
 	height: 2px;
 }
 
-/*style reset*/
+
 button {
 	display: inline-block;
 	border: none;
 	padding: none;
 	margin: 0;
 	outline: none;
-	/* -webkit-appearance: none; */
-	/* -moz-appearance: none; */
 	background: none;
 	-webkit-tap-highlight-color: transparent;
 }
-/*
-button:hover,
-button:focus {
-	 -webkit-appearance: none; 
-}*/
 
 
 button:focus {
@@ -166,17 +244,16 @@ button:focus {
 
 button:active {
 	transform: scale(1);
-	/* -webkit-appearance: none;  */
 }
 
-/* CSS for the pop-up overlay */
+/* Pop-up overlay */
 .overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.877);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -200,6 +277,16 @@ button:active {
 }
 
 #playAgainButton{
+	font-size: 20px;
+	font-family: 'Pac-font', sans-serif;
+	color: #fff;
+	background-color: #222;
+	border-radius: 10px;
+	padding: 20px;
+	margin-top: 40px;
+}
+
+#playAgainWinButton{
 	font-size: 20px;
 	font-family: 'Pac-font', sans-serif;
 	color: #fff;

@@ -3,44 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Welcome to PacMan</title>
+
+    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 </head>
 <body>
-    <!-- <div id="container">
-        <div class="mbox">
-            <img src="images/pacman-logo.png">
-            <p id="timer">0:30</p>
-            
-            <div class="pop-up">
-                <h1>Are you ready?</h1>
-                <button>Start</button>
-            </div>
-            <div id="maze">
-                <div id="thingie">
-                    <div class="emo" id="emo">🥺</div>
-                </div>
-                <div id="home">
-                    <div class="emo">🏠</div>
-                </div>
-                <div class="barrier" id="top"></div>
-                <div class="barrier" id="bottom"></div>
-            </div>
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <img src="assets/img/preloader-img.jpg">
+        <div class="dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
         </div>
-        <div class="controls">
-            <div class="buttons">
-                <button class="btn" id="bu"><div class="chevron">↑</div></button>
-                <button class="btn" id="bd"><div class="chevron">↓</div></button>
-                <button class="btn" id="bl"><div class="chevron">←</div></button>
-                <button class="btn" id="br"><div class="chevron">→</div></button>
-            </div>
-        </div>
-    </div> -->
+    </div>
 
-    <div id="container">
+    <!-- Audio -->
+    <audio id="audio" loop autoplay>
+        <source src="assets/audio/pacman.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="audio-controls">
+        <button id="muteButton" onclick="toggleMute()">
+            <i id="muteIcon" class="fas fa-volume-high"></i>
+        </button>
+    </div>
+
+
+    <!-- container -->
+    <div id="container" class="container">
         <div class="mbox">
-            <img src="images/pacman-logo.png">
-            <p id="timer">0:30</p>
+            <img src="/assets/img/pacman-logo.png">
+            <p id="timer">0:00</p>
             <div id="maze">
                 <div id="thingie">
                     <div class="emo" id="emo">🥺</div>
@@ -66,9 +70,18 @@
     <div class="overlay" id="overlay">
         <div class="popup">
             <h2>You Lose</h2>
-            <button id="playAgainButton">Play again!</button>
+            <button id="playAgainButton">Try again!</button>
         </div>
     </div>
+
+    <!-- "You Win" pop-up overlay -->
+    <div class="overlay" id="winOverlay">
+        <div class="popup">
+            <h2>You Win</h2>
+            <button id="playAgainWinButton">Play again!</button>
+        </div>
+    </div>
+
  
     <script src="script.js"></script>
 </body>
